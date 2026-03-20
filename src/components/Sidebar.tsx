@@ -10,6 +10,8 @@ import {
   Home,
   BarChart3,
 } from "lucide-react";
+import NotificationCenter from "./NotificationCenter";
+import CollabPresence from "./CollabPresence";
 
 const navItems = [
   { href: "/app", label: "Generate", icon: PenLine, description: "Create new posts" },
@@ -27,15 +29,18 @@ export default function Sidebar() {
       role="complementary"
       aria-label="Sidebar navigation"
     >
-      {/* Logo */}
-      <div className="flex items-center gap-2.5 border-b border-zinc-800 px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600" aria-hidden="true">
-          <Zap className="h-4.5 w-4.5 text-white" />
+      {/* Logo + Notifications */}
+      <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600" aria-hidden="true">
+            <Zap className="h-4.5 w-4.5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold text-white tracking-tight">PostCraft</h1>
+            <p className="text-[10px] text-indigo-400 font-medium -mt-0.5">AI-Powered</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-base font-bold text-white tracking-tight">PostCraft</h1>
-          <p className="text-[10px] text-indigo-400 font-medium -mt-0.5">AI-Powered</p>
-        </div>
+        <NotificationCenter />
       </div>
 
       {/* Navigation */}
@@ -69,7 +74,12 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-zinc-800 p-4">
+      <div className="border-t border-zinc-800 p-4 space-y-3">
+        {/* Collaboration Presence */}
+        <div className="px-1">
+          <CollabPresence />
+        </div>
+
         <Link
           href="/"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"

@@ -265,6 +265,99 @@
   animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
+/* Bell shake animation for unread notifications */
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0); }
+  10% { transform: rotate(12deg); }
+  20% { transform: rotate(-10deg); }
+  30% { transform: rotate(8deg); }
+  40% { transform: rotate(-6deg); }
+  50% { transform: rotate(4deg); }
+  60% { transform: rotate(-2deg); }
+  70% { transform: rotate(0); }
+}
+
+.bell-shake {
+  animation: bellShake 1.5s ease-in-out infinite;
+  animation-delay: 2s;
+  transform-origin: top center;
+}
+
+/* Notification badge pulse */
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.notification-badge {
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+/* Notification panel slide-down */
+@keyframes notifSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.notification-panel {
+  animation: notifSlideDown 0.25s ease-out;
+}
+
+/* Notification item fade in */
+@keyframes notifItemIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.notification-item {
+  animation: notifItemIn 0.2s ease-out both;
+}
+
+.notification-item:nth-child(1) { animation-delay: 0.02s; }
+.notification-item:nth-child(2) { animation-delay: 0.04s; }
+.notification-item:nth-child(3) { animation-delay: 0.06s; }
+.notification-item:nth-child(4) { animation-delay: 0.08s; }
+.notification-item:nth-child(5) { animation-delay: 0.10s; }
+
+/* Presence pulse for online dots */
+@keyframes presencePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); }
+}
+
+.presence-pulse {
+  animation: presencePulse 2s ease-in-out infinite;
+}
+
+/* Collab presence fade transition */
+.collab-presence {
+  animation: pageFadeIn 0.4s ease-out;
+}
+
+/* Avatar tooltip */
+.avatar-tooltip {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.group:hover .avatar-tooltip {
+  opacity: 1;
+}
+
+/* Avatar ring subtle glow on hover */
+.avatar-ring {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-ring:hover {
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+
 /* Page transition fade in */
 @keyframes pageFadeIn {
   from {
@@ -316,6 +409,31 @@
   }
 
   .language-dropdown {
+    animation: none !important;
+  }
+
+  .bell-shake {
+    animation: none !important;
+  }
+
+  .notification-badge {
+    animation: none !important;
+  }
+
+  .notification-panel {
+    animation: none !important;
+  }
+
+  .notification-item {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .presence-pulse {
+    animation: none !important;
+  }
+
+  .collab-presence {
     animation: none !important;
   }
 }
