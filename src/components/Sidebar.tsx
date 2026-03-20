@@ -11,6 +11,7 @@ import {
   Home,
   BarChart3,
   Star,
+  Plug,
 } from "lucide-react";
 import NotificationCenter from "./NotificationCenter";
 import CollabPresence from "./CollabPresence";
@@ -22,6 +23,7 @@ const navItems = [
   { href: "/app/templates", label: "Templates", icon: LayoutTemplate, description: "Post templates" },
   { href: "/app/favorites", label: "Favorites", icon: Star, description: "Starred posts", hasBadge: true },
   { href: "/app/analytics", label: "Analytics", icon: BarChart3, description: "Usage insights" },
+  { href: "/app/integrations", label: "Integrations", icon: Plug, description: "Slack, Discord & more" },
 ];
 
 export default function Sidebar() {
