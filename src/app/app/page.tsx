@@ -480,6 +480,8 @@ export default function GeneratePage() {
                 isStreaming={isGenerating && activeTool === "generate"}
                 onSave={generatedPost ? handleSavePost : undefined}
                 language={postLanguage !== "en" ? postLanguage : undefined}
+                style={style}
+                topic={topic}
               />
             )}
           </div>

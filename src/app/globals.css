@@ -413,6 +413,20 @@
   animation: countdownPulse 1s ease-in-out infinite;
 }
 
+/* Favorite star bounce animation */
+@keyframes favoriteBounce {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.25); }
+  40% { transform: scale(0.9); }
+  60% { transform: scale(1.15); }
+  80% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.favorite-bounce {
+  animation: favoriteBounce 0.6s ease-out;
+}
+
 /* Reduced Motion — disable ALL animations for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -487,5 +501,9 @@
   .countdown-pulse {
     animation: none !important;
     opacity: 1;
+  }
+
+  .favorite-bounce {
+    animation: none !important;
   }
 }

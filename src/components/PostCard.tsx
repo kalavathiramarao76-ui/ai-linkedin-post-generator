@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Copy, Check, Bookmark, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { getLanguageByCode } from "@/lib/languages";
+import FavoriteButton from "@/components/FavoriteButton";
+import ShareButton from "@/components/ShareButton";
 
 interface PostCardProps {
   content: string;
@@ -14,6 +16,8 @@ interface PostCardProps {
   showActions?: boolean;
   meta?: { style?: string; topic?: string; date?: string };
   language?: string;
+  style?: string;
+  topic?: string;
 }
 
 export default function PostCard({
@@ -25,6 +29,8 @@ export default function PostCard({
   showActions = true,
   meta,
   language,
+  style = "",
+  topic = "",
 }: PostCardProps) {
   const [copied, setCopied] = useState(false);
 
@@ -107,6 +113,15 @@ export default function PostCard({
               Use as Template
             </button>
           )}
+
+          <FavoriteButton
+            content={content}
+            style={style || meta?.style || ""}
+            topic={topic || meta?.topic || ""}
+            size="sm"
+          />
+
+          <ShareButton content={content} size="sm" />
 
           {onDelete && (
             <button

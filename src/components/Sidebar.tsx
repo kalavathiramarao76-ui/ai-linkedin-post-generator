@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -9,19 +10,33 @@ import {
   Zap,
   Home,
   BarChart3,
+  Star,
 } from "lucide-react";
 import NotificationCenter from "./NotificationCenter";
 import CollabPresence from "./CollabPresence";
+import { getFavoritesCount } from "@/lib/favorites";
 
 const navItems = [
   { href: "/app", label: "Generate", icon: PenLine, description: "Create new posts" },
   { href: "/app/optimize", label: "Optimize", icon: Sparkles, description: "Improve existing posts" },
   { href: "/app/templates", label: "Templates", icon: LayoutTemplate, description: "Post templates" },
+  { href: "/app/favorites", label: "Favorites", icon: Star, description: "Starred posts", hasBadge: true },
   { href: "/app/analytics", label: "Analytics", icon: BarChart3, description: "Usage insights" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [favCount, setFavCount] = useState(0);
+
+  const refreshCount = useCallback(() => {
+    setFavCount(getFavoritesCount());
+  }, []);
+
+  useEffect(() => {
+    refreshCount();
+    window.addEventListener("favorites-changed", refreshCount);
+    return () => window.removeEventListener("favorites-changed", refreshCount);
+  }, [refreshCount]);
 
   return (
     <aside
@@ -61,9 +76,21 @@ export default function Sidebar() {
                   : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200 border border-transparent"
               }`}
             >
-              <Icon className="h-4.5 w-4.5 flex-shrink-0" aria-hidden="true" />
-              <div>
-                <p>{item.label}</p>
+              <Icon
+                className={`h-4.5 w-4.5 flex-shrink-0 ${
+                  item.label === "Favorites" && isActive ? "fill-amber-400 text-amber-400" : ""
+                }`}
+                aria-hidden="true"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p>{item.label}</p>
+                  {"hasBadge" in item && item.hasBadge && favCount > 0 && (
+                    <span className="inline-flex items-center justify-center h-4.5 min-w-[18px] rounded-full bg-amber-500/20 border border-amber-500/30 px-1.5 text-[10px] font-bold text-amber-400 notification-badge">
+                      {favCount > 99 ? "99+" : favCount}
+                    </span>
+                  )}
+                </div>
                 <p className={`text-[10px] mt-0.5 ${isActive ? "text-indigo-400/70" : "text-zinc-600"}`}>
                   {item.description}
                 </p>
