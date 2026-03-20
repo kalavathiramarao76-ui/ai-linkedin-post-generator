@@ -21,6 +21,7 @@ import LinkedInPreview from "@/components/LinkedInPreview";
 import { savePost, saveDraft, getDraft } from "@/lib/storage";
 import { trackGeneration } from "@/lib/analytics";
 import { getStoredLanguage, setStoredLanguage, getLanguageByCode } from "@/lib/languages";
+import ApiErrorFallback from "@/components/ApiErrorFallback";
 
 type ActiveTool = "generate" | "hooks" | "hashtags" | "tone";
 
@@ -36,6 +37,7 @@ export default function GeneratePage() {
   const [hookResults, setHookResults] = useState("");
   const [hashtagResults, setHashtagResults] = useState("");
   const [postLanguage, setPostLanguage] = useState("en");
+  const [apiError, setApiError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const liveRegionRef = useRef<HTMLDivElement>(null);
 
@@ -129,6 +131,7 @@ export default function GeneratePage() {
     setIsGenerating(true);
     setGeneratedPost("");
     setPostLanguage(language);
+    setApiError(null);
     let fullText = "";
 
     try {
@@ -148,6 +151,7 @@ export default function GeneratePage() {
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Generation failed";
+      setApiError(msg);
       toast.error(msg);
       setIsGenerating(false);
     }
@@ -454,6 +458,17 @@ export default function GeneratePage() {
           >
             {isGenerating ? "Generating post content..." : generatedPost ? "Post generation complete." : ""}
           </div>
+
+          {/* API Error Fallback */}
+          {apiError && !isGenerating && (
+            <ApiErrorFallback
+              error={apiError}
+              onRetry={() => {
+                setApiError(null);
+                handleGenerate();
+              }}
+            />
+          )}
 
           {/* Output */}
           <div role="tabpanel" aria-label={showPreview ? "LinkedIn preview" : "Editor view"}>

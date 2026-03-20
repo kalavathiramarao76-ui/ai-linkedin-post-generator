@@ -170,9 +170,15 @@ export default function LandingPage() {
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-indigo-300 mb-8">
-            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-            AI-Powered LinkedIn Content Creation
+          <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-indigo-300">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              AI-Powered LinkedIn Content Creation
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 backdrop-blur-sm px-3 py-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+              <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
+              Enterprise-Grade
+            </div>
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">

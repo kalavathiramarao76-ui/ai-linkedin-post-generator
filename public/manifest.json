@@ -1,0 +1,25 @@
+{
+  "name": "LinkedIn Post Pro",
+  "short_name": "PostCraft",
+  "description": "AI-powered LinkedIn post generator. Create viral posts in seconds.",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "social"],
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
