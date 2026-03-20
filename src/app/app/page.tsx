@@ -120,7 +120,10 @@ export default function GeneratePage() {
         "/api/generate",
         { topic, style, type: "generate" },
         (text) => setGeneratedPost((prev) => prev + text),
-        () => setIsGenerating(false)
+        () => {
+          setIsGenerating(false);
+          toast.success("Post generated successfully!");
+        }
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Generation failed";
@@ -144,7 +147,10 @@ export default function GeneratePage() {
         "/api/generate",
         { topic, type: "hooks" },
         (text) => setHookResults((prev) => prev + text),
-        () => setIsGenerating(false)
+        () => {
+          setIsGenerating(false);
+          toast.success("Hooks generated!");
+        }
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Hook generation failed";
@@ -168,7 +174,10 @@ export default function GeneratePage() {
         "/api/generate",
         { topic, content: generatedPost, type: "hashtags" },
         (text) => setHashtagResults((prev) => prev + text),
-        () => setIsGenerating(false)
+        () => {
+          setIsGenerating(false);
+          toast.success("Hashtags suggested!");
+        }
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Hashtag suggestion failed";
@@ -191,7 +200,10 @@ export default function GeneratePage() {
         "/api/generate",
         { content: generatedPost, tone, type: "tone", topic },
         (text) => setGeneratedPost((prev) => prev + text),
-        () => setIsGenerating(false)
+        () => {
+          setIsGenerating(false);
+          toast.success("Tone adjusted!");
+        }
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Tone adjustment failed";
@@ -207,7 +219,7 @@ export default function GeneratePage() {
   }, [generatedPost, style, topic]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-transition">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white">Post Generator</h1>
@@ -242,7 +254,9 @@ export default function GeneratePage() {
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating || !topic.trim()}
-                className="btn-primary flex-1 min-w-[140px]"
+                className={`btn-primary flex-1 min-w-[140px] ${
+                  !isGenerating && topic.trim() ? "btn-pulse-idle" : ""
+                }`}
               >
                 {isGenerating && activeTool === "generate" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

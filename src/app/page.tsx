@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Sparkles,
   PenLine,
@@ -76,10 +77,10 @@ Problem solvers talk about what they've DONE.
 
 Next time you interview, try this:
 
-→ Start with the problem, not the tech stack
-→ Explain your decision-making process
-→ Share what you'd do differently
-→ Ask questions that show you think in systems
+\u2192 Start with the problem, not the tech stack
+\u2192 Explain your decision-making process
+\u2192 Share what you'd do differently
+\u2192 Ask questions that show you think in systems
 
 The best hire I ever made couldn't solve the algorithm question.
 
@@ -89,11 +90,56 @@ That's the difference.
 
 #Hiring #Engineering #CareerAdvice #Interviews`;
 
-export default function LandingPage() {
+function AnimatedBackground() {
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="animated-bg">
+      <div className="blob blob-1" />
+      <div className="blob blob-2" />
+      <div className="blob blob-3" />
+    </div>
+  );
+}
+
+function StaggeredCard({
+  children,
+  index,
+}: {
+  children: React.ReactNode;
+  index: number;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 100 + index * 80);
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  return (
+    <div
+      className={`transition-all duration-500 ${
+        visible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-4"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+export default function LandingPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-zinc-950 relative">
+      <AnimatedBackground />
+
       {/* Nav */}
-      <nav className="fixed top-0 z-50 w-full border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
+      <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-zinc-950/60 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
@@ -111,14 +157,13 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-indigo-600/10 blur-[120px]" />
-        </div>
-
-        <div className="relative mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-1.5 text-xs font-medium text-indigo-300 mb-8">
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden z-10">
+        <div
+          className={`relative mx-auto max-w-4xl text-center transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
+        >
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-indigo-300 mb-8">
             <Sparkles className="h-3.5 w-3.5" />
             AI-Powered LinkedIn Content Creation
           </div>
@@ -126,7 +171,7 @@ export default function LandingPage() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
             Write LinkedIn posts
             <br />
-            <span className="text-gradient">that go viral</span>
+            <span className="text-gradient-hero">that go viral</span>
           </h1>
 
           <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
@@ -150,18 +195,20 @@ export default function LandingPage() {
 
           {/* Stats */}
           <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-zinc-500 mt-1">{stat.label}</p>
-              </div>
+            {stats.map((stat, i) => (
+              <StaggeredCard key={stat.label} index={i}>
+                <div className="text-center glass-card !p-4">
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-xs text-zinc-500 mt-1">{stat.label}</p>
+                </div>
+              </StaggeredCard>
             ))}
           </div>
         </div>
       </section>
 
       {/* Example Post Preview */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 relative z-10">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white">
@@ -173,7 +220,7 @@ export default function LandingPage() {
           </div>
 
           <div className="max-w-xl mx-auto">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 shadow-2xl overflow-hidden">
+            <div className="glass-card !p-0 overflow-hidden">
               {/* LinkedIn Card Header */}
               <div className="flex items-start gap-3 p-4 pb-2">
                 <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
@@ -194,21 +241,21 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="px-4 py-2 flex items-center justify-between border-t border-zinc-800 text-xs text-zinc-500">
+              <div className="px-4 py-2 flex items-center justify-between border-t border-white/5 text-xs text-zinc-500">
                 <span>2,847 reactions</span>
                 <span>198 comments</span>
               </div>
             </div>
 
             <p className="text-center text-xs text-zinc-600 mt-4">
-              Generated with PostCraft AI in the "Thought Leader" style
+              Generated with PostCraft AI in the &quot;Thought Leader&quot; style
             </p>
           </div>
         </div>
       </section>
 
       {/* Features Grid */}
-      <section className="py-20 px-6" id="features">
+      <section className="py-20 px-6 relative z-10" id="features">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white">
@@ -221,28 +268,27 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className="card hover:border-zinc-700 transition-all group"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-400 mb-4 group-hover:bg-indigo-600/20 transition-colors">
-                  <feature.icon className="h-5 w-5" />
+            {features.map((feature, index) => (
+              <StaggeredCard key={feature.title} index={index}>
+                <div className="glass-card group transition-all h-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-400 mb-4 group-hover:bg-indigo-600/20 transition-colors">
+                    <feature.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-semibold text-zinc-100">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-base font-semibold text-zinc-100">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
+              </StaggeredCard>
             ))}
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6 border-t border-zinc-800/50">
+      <section className="py-20 px-6 border-t border-white/5 relative z-10">
         <div className="mx-auto max-w-4xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white">
@@ -270,28 +316,30 @@ export default function LandingPage() {
                 title: "Preview & publish",
                 desc: "Preview how it looks on LinkedIn, tweak if needed, copy and publish.",
               },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-indigo-400 mb-4">
-                  <item.icon className="h-5 w-5" />
+            ].map((item, index) => (
+              <StaggeredCard key={item.step} index={index}>
+                <div className="text-center">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-indigo-400 mb-4">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <p className="text-xs font-bold text-indigo-500 mb-2">
+                    STEP {item.step}
+                  </p>
+                  <h3 className="text-lg font-semibold text-white">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-zinc-400">{item.desc}</p>
                 </div>
-                <p className="text-xs font-bold text-indigo-500 mb-2">
-                  STEP {item.step}
-                </p>
-                <h3 className="text-lg font-semibold text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm text-zinc-400">{item.desc}</p>
-              </div>
+              </StaggeredCard>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 relative z-10">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="card !p-12 glow-lg border-indigo-500/20">
+          <div className="glass-card !p-12 glow-lg">
             <h2 className="text-3xl font-bold text-white">
               Ready to level up your LinkedIn game?
             </h2>
@@ -311,7 +359,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800/50 py-8 px-6">
+      <footer className="border-t border-white/5 py-8 px-6 relative z-10">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded bg-indigo-600">
