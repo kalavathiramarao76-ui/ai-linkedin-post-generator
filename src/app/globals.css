@@ -30,6 +30,11 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-zinc-600;
   }
+
+  /* Focus-visible for keyboard navigation */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-indigo-500;
+  }
 }
 
 @layer components {
@@ -100,6 +105,35 @@
     background: rgba(255, 255, 255, 0.06);
     box-shadow: 0 8px 32px rgba(99, 102, 241, 0.08);
   }
+
+  /* Skip to content link */
+  .skip-to-content {
+    @apply fixed top-0 left-0 z-[100] bg-indigo-600 text-white px-6 py-3 text-sm font-semibold rounded-br-lg;
+    transform: translateY(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .skip-to-content:focus {
+    transform: translateY(0);
+  }
+
+  /* Language dropdown */
+  .language-dropdown {
+    animation: dropdownOpen 0.2s ease-out;
+  }
+
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 }
 
 @layer utilities {
@@ -152,6 +186,17 @@
   50% { background-position: 100% 50%; }
 }
 
+@keyframes dropdownOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .animated-bg {
   position: fixed;
   inset: 0;
@@ -201,7 +246,7 @@
 }
 
 .streaming-cursor::after {
-  content: "▊";
+  content: "\u2588";
   animation: blink 0.7s infinite;
   @apply text-indigo-400 ml-0.5;
 }
@@ -234,4 +279,43 @@
 
 .page-transition {
   animation: pageFadeIn 0.4s ease-out forwards;
+}
+
+/* Reduced Motion — disable ALL animations for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animated-bg .blob {
+    animation: none !important;
+  }
+
+  .text-gradient-hero {
+    animation: none !important;
+  }
+
+  .streaming-cursor::after {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .btn-pulse-idle {
+    animation: none !important;
+    box-shadow: none;
+  }
+
+  .page-transition {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .language-dropdown {
+    animation: none !important;
+  }
 }

@@ -8,7 +8,6 @@ import {
   LayoutTemplate,
   Zap,
   Home,
-  BookOpen,
   BarChart3,
 } from "lucide-react";
 
@@ -23,10 +22,14 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-full w-64 flex-col border-r border-white/5 bg-zinc-950/80 backdrop-blur-2xl">
+    <aside
+      className="fixed left-0 top-0 z-40 flex h-full w-64 flex-col border-r border-white/5 bg-zinc-950/80 backdrop-blur-2xl"
+      role="complementary"
+      aria-label="Sidebar navigation"
+    >
       {/* Logo */}
       <div className="flex items-center gap-2.5 border-b border-zinc-800 px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600" aria-hidden="true">
           <Zap className="h-4.5 w-4.5 text-white" />
         </div>
         <div>
@@ -36,7 +39,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-4" role="navigation" aria-label="Main navigation">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -45,13 +48,15 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
+              aria-label={`${item.label}: ${item.description}`}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                 isActive
                   ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/20"
                   : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200 border border-transparent"
               }`}
             >
-              <Icon className="h-4.5 w-4.5 flex-shrink-0" />
+              <Icon className="h-4.5 w-4.5 flex-shrink-0" aria-hidden="true" />
               <div>
                 <p>{item.label}</p>
                 <p className={`text-[10px] mt-0.5 ${isActive ? "text-indigo-400/70" : "text-zinc-600"}`}>
@@ -68,8 +73,9 @@ export default function Sidebar() {
         <Link
           href="/"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+          aria-label="Back to home page"
         >
-          <Home className="h-3.5 w-3.5" />
+          <Home className="h-3.5 w-3.5" aria-hidden="true" />
           Back to Home
         </Link>
         <div className="mt-2 px-3 text-[10px] text-zinc-700">

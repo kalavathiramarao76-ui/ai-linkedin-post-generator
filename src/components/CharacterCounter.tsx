@@ -28,8 +28,8 @@ export default function CharacterCounter({ count }: CharacterCounterProps) {
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+    <div className="flex items-center gap-3" role="status" aria-label={`Character count: ${count} of ${LINKEDIN_CHAR_LIMIT}. ${label}`}>
+      <div className="flex-1 h-1.5 rounded-full bg-zinc-800 overflow-hidden" role="progressbar" aria-valuenow={count} aria-valuemin={0} aria-valuemax={LINKEDIN_CHAR_LIMIT}>
         <div
           className={`h-full rounded-full transition-all duration-300 ${bgClass}`}
           style={{ width: `${Math.min(percentage, 100)}%` }}
@@ -39,7 +39,7 @@ export default function CharacterCounter({ count }: CharacterCounterProps) {
         <span>
           {count.toLocaleString()} / {LINKEDIN_CHAR_LIMIT.toLocaleString()}
         </span>
-        <span className="text-zinc-600">·</span>
+        <span className="text-zinc-600" aria-hidden="true">·</span>
         <span className="text-zinc-500">{label}</span>
       </div>
     </div>

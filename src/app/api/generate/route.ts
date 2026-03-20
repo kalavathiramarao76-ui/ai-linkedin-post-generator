@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { topic, style, type, content, tone } = body;
+    const { topic, style, type, content, tone, language } = body;
 
     if (!topic && !content) {
       return new Response(
@@ -27,24 +27,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Build language instruction
+    const langInstruction = language && language !== "en"
+      ? `\n\nIMPORTANT: Write this LinkedIn post entirely in ${getLanguageName(language)}. The entire output must be in ${getLanguageName(language)}.`
+      : "";
+
     let systemPrompt: string;
     let userMessage: string;
 
     switch (type) {
       case "hooks":
-        systemPrompt = getHookPrompt();
+        systemPrompt = getHookPrompt() + langInstruction;
         userMessage = `Generate 10 attention-grabbing LinkedIn opening hooks about: ${topic}`;
         break;
       case "hashtags":
-        systemPrompt = getHashtagPrompt();
+        systemPrompt = getHashtagPrompt() + langInstruction;
         userMessage = `Suggest hashtags for this LinkedIn post:\n\n${content || topic}`;
         break;
       case "tone":
-        systemPrompt = getTonePrompt(tone || "professional");
+        systemPrompt = getTonePrompt(tone || "professional") + langInstruction;
         userMessage = `Rewrite this LinkedIn post in a ${tone || "professional"} tone:\n\n${content}`;
         break;
       default:
-        systemPrompt = getGeneratePrompt(style || "thought-leadership");
+        systemPrompt = getGeneratePrompt(style || "thought-leadership") + langInstruction;
         userMessage = `Write a LinkedIn post about: ${topic}`;
         break;
     }
@@ -139,4 +144,20 @@ export async function POST(request: NextRequest) {
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
+}
+
+function getLanguageName(code: string): string {
+  const names: Record<string, string> = {
+    en: "English",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    pt: "Portuguese",
+    hi: "Hindi",
+    ja: "Japanese",
+    zh: "Chinese",
+    ar: "Arabic",
+    ko: "Korean",
+  };
+  return names[code] || "English";
 }

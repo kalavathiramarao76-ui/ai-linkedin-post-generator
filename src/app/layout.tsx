@@ -40,7 +40,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        {children}
+        {/* Skip to content — visible only on focus */}
+        <a
+          href="#main-content"
+          className="skip-to-content"
+        >
+          Skip to main content
+        </a>
+        <div id="main-content">
+          {children}
+        </div>
         <Toaster
           position="bottom-right"
           theme="dark"

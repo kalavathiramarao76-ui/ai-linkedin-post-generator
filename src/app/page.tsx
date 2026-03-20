@@ -11,8 +11,8 @@ import {
   RefreshCw,
   ArrowRight,
   Zap,
-  BarChart3,
   Eye,
+  Globe,
   CheckCircle2,
 } from "lucide-react";
 
@@ -53,12 +53,19 @@ const features = [
     description:
       "Rewrite posts in different tones — professional, casual, inspirational, humorous — to match your brand voice.",
   },
+  {
+    icon: Globe,
+    title: "Multilingual",
+    description:
+      "Generate posts in 10 languages — English, Spanish, French, German, Portuguese, Hindi, Japanese, Chinese, Arabic, and Korean.",
+    badge: "New",
+  },
 ];
 
 const stats = [
   { value: "6", label: "Writing Styles" },
+  { value: "10", label: "Languages" },
   { value: "8+", label: "Post Templates" },
-  { value: "3000", label: "Character Tracking" },
   { value: "Free", label: "No Signup" },
 ];
 
@@ -92,7 +99,7 @@ That's the difference.
 
 function AnimatedBackground() {
   return (
-    <div className="animated-bg">
+    <div className="animated-bg" aria-hidden="true">
       <div className="blob blob-1" />
       <div className="blob blob-2" />
       <div className="blob blob-3" />
@@ -139,32 +146,32 @@ export default function LandingPage() {
       <AnimatedBackground />
 
       {/* Nav */}
-      <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-zinc-950/60 backdrop-blur-2xl">
+      <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-zinc-950/60 backdrop-blur-2xl" role="navigation" aria-label="Main navigation">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600" aria-hidden="true">
               <Zap className="h-4.5 w-4.5 text-white" />
             </div>
             <span className="text-lg font-bold text-white tracking-tight">
               PostCraft
             </span>
           </div>
-          <Link href="/app" className="btn-primary !text-sm">
+          <Link href="/app" className="btn-primary !text-sm" aria-label="Open PostCraft application">
             Open App
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden z-10">
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden z-10" aria-label="Hero section">
         <div
           className={`relative mx-auto max-w-4xl text-center transition-all duration-700 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-indigo-300 mb-8">
-            <Sparkles className="h-3.5 w-3.5" />
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
             AI-Powered LinkedIn Content Creation
           </div>
 
@@ -177,17 +184,18 @@ export default function LandingPage() {
           <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
             Generate high-engagement LinkedIn posts in seconds. Choose your style,
             optimize for engagement, and preview before publishing.
-            Free, no signup required.
+            Free, no signup required. Now in 10 languages.
           </p>
 
           <div className="mt-10 flex items-center justify-center gap-4">
-            <Link href="/app" className="btn-primary !px-8 !py-3 !text-base glow">
+            <Link href="/app" className="btn-primary !px-8 !py-3 !text-base glow" aria-label="Start creating LinkedIn posts">
               Start Creating
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Link>
             <Link
               href="/app/templates"
               className="btn-secondary !px-6 !py-3 !text-base"
+              aria-label="View post templates"
             >
               View Templates
             </Link>
@@ -208,7 +216,7 @@ export default function LandingPage() {
       </section>
 
       {/* Example Post Preview */}
-      <section className="py-16 px-6 relative z-10">
+      <section className="py-16 px-6 relative z-10" aria-label="Example post">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white">
@@ -223,7 +231,7 @@ export default function LandingPage() {
             <div className="glass-card !p-0 overflow-hidden">
               {/* LinkedIn Card Header */}
               <div className="flex items-start gap-3 p-4 pb-2">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg" aria-hidden="true">
                   J
                 </div>
                 <div className="flex-1">
@@ -255,7 +263,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-20 px-6 relative z-10" id="features">
+      <section className="py-20 px-6 relative z-10" id="features" aria-label="Features">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white">
@@ -271,8 +279,15 @@ export default function LandingPage() {
             {features.map((feature, index) => (
               <StaggeredCard key={feature.title} index={index}>
                 <div className="glass-card group transition-all h-full">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-400 mb-4 group-hover:bg-indigo-600/20 transition-colors">
-                    <feature.icon className="h-5 w-5" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-400 group-hover:bg-indigo-600/20 transition-colors">
+                      <feature.icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    {"badge" in feature && feature.badge && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/25 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                        {feature.badge}
+                      </span>
+                    )}
                   </div>
                   <h3 className="text-base font-semibold text-zinc-100">
                     {feature.title}
@@ -288,7 +303,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6 border-t border-white/5 relative z-10">
+      <section className="py-20 px-6 border-t border-white/5 relative z-10" aria-label="How it works">
         <div className="mx-auto max-w-4xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white">
@@ -308,7 +323,7 @@ export default function LandingPage() {
                 step: "02",
                 icon: Sparkles,
                 title: "Choose your style",
-                desc: "Pick from 6 writing styles and 6 tones. AI crafts the perfect post.",
+                desc: "Pick from 6 writing styles, 6 tones, and 10 languages. AI crafts the perfect post.",
               },
               {
                 step: "03",
@@ -319,7 +334,7 @@ export default function LandingPage() {
             ].map((item, index) => (
               <StaggeredCard key={item.step} index={index}>
                 <div className="text-center">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-indigo-400 mb-4">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-indigo-400 mb-4" aria-hidden="true">
                     <item.icon className="h-5 w-5" />
                   </div>
                   <p className="text-xs font-bold text-indigo-500 mb-2">
@@ -337,7 +352,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 relative z-10">
+      <section className="py-20 px-6 relative z-10" aria-label="Call to action">
         <div className="mx-auto max-w-3xl text-center">
           <div className="glass-card !p-12 glow-lg">
             <h2 className="text-3xl font-bold text-white">
@@ -350,26 +365,33 @@ export default function LandingPage() {
             <Link
               href="/app"
               className="btn-primary !px-10 !py-3.5 !text-base mt-8 inline-flex glow"
+              aria-label="Start creating LinkedIn posts now"
             >
               Start Creating Now
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8 px-6 relative z-10">
-        <div className="mx-auto max-w-6xl flex items-center justify-between">
+      <footer className="border-t border-white/5 py-8 px-6 relative z-10" role="contentinfo">
+        <div className="mx-auto max-w-6xl flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-indigo-600">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-indigo-600" aria-hidden="true">
               <Zap className="h-3 w-3 text-white" />
             </div>
             <span className="text-sm font-semibold text-zinc-400">PostCraft AI</span>
           </div>
-          <p className="text-xs text-zinc-600">
-            Free & open source. Built with Next.js & AI.
-          </p>
+          <div className="flex items-center gap-4">
+            <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
+              WCAG 2.1 AA
+            </span>
+            <p className="text-xs text-zinc-600">
+              Free & open source. Built with Next.js & AI.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
