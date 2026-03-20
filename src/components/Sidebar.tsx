@@ -9,12 +9,14 @@ import {
   Zap,
   Home,
   BookOpen,
+  BarChart3,
 } from "lucide-react";
 
 const navItems = [
   { href: "/app", label: "Generate", icon: PenLine, description: "Create new posts" },
   { href: "/app/optimize", label: "Optimize", icon: Sparkles, description: "Improve existing posts" },
   { href: "/app/templates", label: "Templates", icon: LayoutTemplate, description: "Post templates" },
+  { href: "/app/analytics", label: "Analytics", icon: BarChart3, description: "Usage insights" },
 ];
 
 export default function Sidebar() {

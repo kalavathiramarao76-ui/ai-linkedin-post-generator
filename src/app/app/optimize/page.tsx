@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import CharacterCounter from "@/components/CharacterCounter";
 import PostCard from "@/components/PostCard";
 import LinkedInPreview from "@/components/LinkedInPreview";
 import { savePost } from "@/lib/storage";
+import { trackGeneration } from "@/lib/analytics";
 
 export default function OptimizePage() {
   const [originalPost, setOriginalPost] = useState("");
@@ -84,6 +85,16 @@ export default function OptimizePage() {
       setIsOptimizing(false);
     }
   }, [originalPost]);
+
+  // Track optimization after optimizedPost is set
+  const prevOptimizedRef = useRef("");
+  useEffect(() => {
+    if (optimizedPost && optimizedPost !== prevOptimizedRef.current && !isOptimizing) {
+      const wordCount = optimizedPost.trim().split(/\s+/).filter(Boolean).length;
+      trackGeneration("optimized", wordCount, "optimize");
+      prevOptimizedRef.current = optimizedPost;
+    }
+  }, [optimizedPost, isOptimizing]);
 
   const handleSave = useCallback(() => {
     if (!optimizedPost.trim()) return;

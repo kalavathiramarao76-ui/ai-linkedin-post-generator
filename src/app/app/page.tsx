@@ -18,6 +18,7 @@ import CharacterCounter from "@/components/CharacterCounter";
 import PostCard from "@/components/PostCard";
 import LinkedInPreview from "@/components/LinkedInPreview";
 import { savePost, saveDraft, getDraft } from "@/lib/storage";
+import { trackGeneration } from "@/lib/analytics";
 
 type ActiveTool = "generate" | "hooks" | "hashtags" | "tone";
 
@@ -114,14 +115,20 @@ export default function GeneratePage() {
 
     setIsGenerating(true);
     setGeneratedPost("");
+    let fullText = "";
 
     try {
       await streamFromAPI(
         "/api/generate",
         { topic, style, type: "generate" },
-        (text) => setGeneratedPost((prev) => prev + text),
+        (text) => {
+          fullText += text;
+          setGeneratedPost((prev) => prev + text);
+        },
         () => {
           setIsGenerating(false);
+          const wordCount = fullText.trim().split(/\s+/).filter(Boolean).length;
+          trackGeneration(style, wordCount, "generate");
           toast.success("Post generated successfully!");
         }
       );
@@ -141,14 +148,20 @@ export default function GeneratePage() {
     setIsGenerating(true);
     setHookResults("");
     setActiveTool("hooks");
+    let fullText = "";
 
     try {
       await streamFromAPI(
         "/api/generate",
         { topic, type: "hooks" },
-        (text) => setHookResults((prev) => prev + text),
+        (text) => {
+          fullText += text;
+          setHookResults((prev) => prev + text);
+        },
         () => {
           setIsGenerating(false);
+          const wordCount = fullText.trim().split(/\s+/).filter(Boolean).length;
+          trackGeneration(style, wordCount, "hooks");
           toast.success("Hooks generated!");
         }
       );
@@ -157,7 +170,7 @@ export default function GeneratePage() {
       toast.error(msg);
       setIsGenerating(false);
     }
-  }, [topic, streamFromAPI]);
+  }, [topic, style, streamFromAPI]);
 
   const handleSuggestHashtags = useCallback(async () => {
     if (!generatedPost.trim() && !topic.trim()) {
@@ -168,14 +181,20 @@ export default function GeneratePage() {
     setIsGenerating(true);
     setHashtagResults("");
     setActiveTool("hashtags");
+    let fullText = "";
 
     try {
       await streamFromAPI(
         "/api/generate",
         { topic, content: generatedPost, type: "hashtags" },
-        (text) => setHashtagResults((prev) => prev + text),
+        (text) => {
+          fullText += text;
+          setHashtagResults((prev) => prev + text);
+        },
         () => {
           setIsGenerating(false);
+          const wordCount = fullText.trim().split(/\s+/).filter(Boolean).length;
+          trackGeneration(style, wordCount, "hashtags");
           toast.success("Hashtags suggested!");
         }
       );
@@ -184,7 +203,7 @@ export default function GeneratePage() {
       toast.error(msg);
       setIsGenerating(false);
     }
-  }, [topic, generatedPost, streamFromAPI]);
+  }, [topic, style, generatedPost, streamFromAPI]);
 
   const handleToneAdjust = useCallback(async () => {
     if (!generatedPost.trim()) {
@@ -194,14 +213,20 @@ export default function GeneratePage() {
 
     setIsGenerating(true);
     setGeneratedPost("");
+    let fullText = "";
 
     try {
       await streamFromAPI(
         "/api/generate",
         { content: generatedPost, tone, type: "tone", topic },
-        (text) => setGeneratedPost((prev) => prev + text),
+        (text) => {
+          fullText += text;
+          setGeneratedPost((prev) => prev + text);
+        },
         () => {
           setIsGenerating(false);
+          const wordCount = fullText.trim().split(/\s+/).filter(Boolean).length;
+          trackGeneration(style, wordCount, "optimize");
           toast.success("Tone adjusted!");
         }
       );
@@ -210,7 +235,7 @@ export default function GeneratePage() {
       toast.error(msg);
       setIsGenerating(false);
     }
-  }, [generatedPost, tone, topic, streamFromAPI]);
+  }, [generatedPost, tone, style, topic, streamFromAPI]);
 
   const handleSavePost = useCallback(() => {
     if (!generatedPost.trim()) return;
