@@ -543,3 +543,92 @@
     opacity: 1;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   Apple-quality landing page styles
+   ═══════════════════════════════════════════════ */
+
+.landing-root {
+  min-height: 100vh;
+  background: #0a0a0c;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Noise texture — 1.5% opacity */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Single subtle blue gradient wash */
+.gradient-wash {
+  position: fixed;
+  top: -30%;
+  left: -20%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(59, 130, 246, 0.06) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Style showcase rows */
+.style-row {
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: default;
+  transition: background 0.3s ease;
+}
+
+.style-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.style-row:hover {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* Fade-up animation via IntersectionObserver */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-up-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children */
+.style-row:nth-child(1) .fade-up { transition-delay: 0ms; }
+.style-row:nth-child(2) .fade-up { transition-delay: 60ms; }
+.style-row:nth-child(3) .fade-up { transition-delay: 120ms; }
+.style-row:nth-child(4) .fade-up { transition-delay: 180ms; }
+.style-row:nth-child(5) .fade-up { transition-delay: 240ms; }
+.style-row:nth-child(6) .fade-up { transition-delay: 300ms; }
+
+/* Reduced motion override for landing */
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    opacity: 1;
+    transform: none;
+    transition: none !important;
+  }
+
+  .noise-overlay {
+    display: none;
+  }
+}

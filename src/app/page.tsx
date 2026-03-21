@@ -1,403 +1,247 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import {
-  Sparkles,
-  PenLine,
-  Lightbulb,
-  Hash,
-  LayoutTemplate,
-  RefreshCw,
-  ArrowRight,
-  Zap,
-  Eye,
-  Globe,
-  CheckCircle2,
-} from "lucide-react";
+import { useEffect, useRef, useCallback } from "react";
+import { ArrowRight, Zap } from "lucide-react";
 
-const features = [
+/* ── Style showcase data ── */
+const styles = [
   {
-    icon: PenLine,
-    title: "Post Generator",
-    description:
-      "Enter any topic and get a polished LinkedIn post in your chosen style — thought leadership, storytelling, how-to, and more.",
+    num: "01",
+    name: "Thought Leader",
+    example:
+      "I've hired 200+ engineers. Here's the #1 mistake I see in interviews.",
   },
   {
-    icon: Sparkles,
-    title: "Post Optimizer",
-    description:
-      "Paste an existing post and AI rewrites it with better hooks, formatting, CTAs, and hashtags for maximum engagement.",
+    num: "02",
+    name: "Story",
+    example:
+      "Last Tuesday I almost quit. Then a stranger on LinkedIn changed everything.",
   },
   {
-    icon: Lightbulb,
-    title: "Hook Generator",
-    description:
-      "Generate 10 attention-grabbing opening lines for any topic. The first line decides if people click 'see more'.",
+    num: "03",
+    name: "How-To",
+    example:
+      "5 steps to mass-produce LinkedIn hooks that get 10x more impressions.",
   },
   {
-    icon: Hash,
-    title: "Hashtag Suggester",
-    description:
-      "AI suggests relevant hashtags based on your content — a perfect mix of high-reach and niche tags.",
+    num: "04",
+    name: "Contrarian",
+    example:
+      "Unpopular opinion: your morning routine doesn't matter. Here's what does.",
   },
   {
-    icon: LayoutTemplate,
-    title: "Post Templates",
-    description:
-      "Pre-built templates for career updates, achievements, insights, questions, and more. Ready to customize.",
+    num: "05",
+    name: "Listicle",
+    example:
+      "8 tools I use daily that nobody talks about. Number 4 saved me 6 hours a week.",
   },
   {
-    icon: RefreshCw,
-    title: "Tone Adjuster",
-    description:
-      "Rewrite posts in different tones — professional, casual, inspirational, humorous — to match your brand voice.",
-  },
-  {
-    icon: Globe,
-    title: "Multilingual",
-    description:
-      "Generate posts in 10 languages — English, Spanish, French, German, Portuguese, Hindi, Japanese, Chinese, Arabic, and Korean.",
-    badge: "New",
+    num: "06",
+    name: "Inspirational",
+    example:
+      "You don't need a big audience. You need the right 50 people reading your work.",
   },
 ];
 
-const stats = [
-  { value: "6", label: "Writing Styles" },
-  { value: "10", label: "Languages" },
-  { value: "8+", label: "Post Templates" },
-  { value: "Free", label: "No Signup" },
-];
+/* ── IntersectionObserver hook for fade-up ── */
+function useFadeUp() {
+  const ref = useRef<HTMLDivElement>(null);
 
-const examplePost = `I've hired 200+ engineers in 10 years.
-
-Here's the #1 mistake I see in interviews:
-
-Candidates try to prove they're smart.
-
-Instead of showing they can solve problems.
-
-There's a huge difference.
-
-Smart people talk about what they KNOW.
-Problem solvers talk about what they've DONE.
-
-Next time you interview, try this:
-
-\u2192 Start with the problem, not the tech stack
-\u2192 Explain your decision-making process
-\u2192 Share what you'd do differently
-\u2192 Ask questions that show you think in systems
-
-The best hire I ever made couldn't solve the algorithm question.
-
-But she asked 3 questions that completely reframed the problem.
-
-That's the difference.
-
-#Hiring #Engineering #CareerAdvice #Interviews`;
-
-function AnimatedBackground() {
-  return (
-    <div className="animated-bg" aria-hidden="true">
-      <div className="blob blob-1" />
-      <div className="blob blob-2" />
-      <div className="blob blob-3" />
-    </div>
-  );
-}
-
-function StaggeredCard({
-  children,
-  index,
-}: {
-  children: React.ReactNode;
-  index: number;
-}) {
-  const [visible, setVisible] = useState(false);
+  const setRef = useCallback((node: HTMLDivElement | null) => {
+    (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+  }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 100 + index * 80);
-    return () => clearTimeout(timer);
-  }, [index]);
+    const el = ref.current;
+    if (!el) return;
 
-  return (
-    <div
-      className={`transition-all duration-500 ${
-        visible
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-4"
-      }`}
-    >
-      {children}
-    </div>
-  );
+    const children = el.querySelectorAll(".fade-up");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-up-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    children.forEach((child) => observer.observe(child));
+    return () => observer.disconnect();
+  }, []);
+
+  return setRef;
 }
 
 export default function LandingPage() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const containerRef = useFadeUp();
 
   return (
-    <div className="min-h-screen bg-zinc-950 relative">
-      <AnimatedBackground />
+    <div ref={containerRef} className="landing-root">
+      {/* Noise texture overlay */}
+      <div className="noise-overlay" aria-hidden="true" />
+
+      {/* Single subtle blue gradient wash */}
+      <div className="gradient-wash" aria-hidden="true" />
 
       {/* Nav */}
-      <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-zinc-950/60 backdrop-blur-2xl" role="navigation" aria-label="Main navigation">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <nav
+        className="fixed top-0 z-50 w-full border-b border-white/[0.04] bg-[#0a0a0c]/80 backdrop-blur-2xl"
+        role="navigation"
+        aria-label="Main navigation"
+      >
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600" aria-hidden="true">
-              <Zap className="h-4.5 w-4.5 text-white" />
+            <div
+              className="flex h-7 w-7 items-center justify-center rounded-md bg-white"
+              aria-hidden="true"
+            >
+              <Zap className="h-3.5 w-3.5 text-[#0a0a0c]" />
             </div>
-            <span className="text-lg font-bold text-white tracking-tight">
+            <span className="text-sm font-semibold text-white/90 tracking-tight">
               PostCraft
             </span>
           </div>
-          <Link href="/app" className="btn-primary !text-sm" aria-label="Open PostCraft application">
+          <Link
+            href="/app"
+            className="text-sm text-white/60 hover:text-white transition-colors duration-300"
+            aria-label="Open PostCraft application"
+          >
             Open App
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden z-10" aria-label="Hero section">
-        <div
-          className={`relative mx-auto max-w-4xl text-center transition-all duration-700 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-indigo-300">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              AI-Powered LinkedIn Content Creation
-            </div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 backdrop-blur-sm px-3 py-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-              <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
-              Enterprise-Grade
-            </div>
-          </div>
-
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
-            Write LinkedIn posts
-            <br />
-            <span className="text-gradient-hero">that go viral</span>
-          </h1>
-
-          <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-            Generate high-engagement LinkedIn posts in seconds. Choose your style,
-            optimize for engagement, and preview before publishing.
-            Free, no signup required. Now in 10 languages.
-          </p>
-
-          <div className="mt-10 flex items-center justify-center gap-4">
-            <Link href="/app" className="btn-primary !px-8 !py-3 !text-base glow" aria-label="Start creating LinkedIn posts">
-              Start Creating
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
-            </Link>
-            <Link
-              href="/app/templates"
-              className="btn-secondary !px-6 !py-3 !text-base"
-              aria-label="View post templates"
-            >
-              View Templates
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {stats.map((stat, i) => (
-              <StaggeredCard key={stat.label} index={i}>
-                <div className="text-center glass-card !p-4">
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-zinc-500 mt-1">{stat.label}</p>
-                </div>
-              </StaggeredCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Example Post Preview */}
-      <section className="py-16 px-6 relative z-10" aria-label="Example post">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white">
-              See what AI can create
-            </h2>
-            <p className="text-zinc-400 mt-2">
-              Generated in under 10 seconds. Ready to copy-paste.
-            </p>
-          </div>
-
-          <div className="max-w-xl mx-auto">
-            <div className="glass-card !p-0 overflow-hidden">
-              {/* LinkedIn Card Header */}
-              <div className="flex items-start gap-3 p-4 pb-2">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg" aria-hidden="true">
-                  J
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-sm text-zinc-100">
-                    Jane Smith
-                  </p>
-                  <p className="text-xs text-zinc-400">VP of Engineering | Tech Leader</p>
-                  <p className="text-xs text-zinc-500 mt-0.5">2h ago</p>
-                </div>
-              </div>
-
-              <div className="px-4 pb-4">
-                <p className="text-sm text-zinc-200 whitespace-pre-line leading-relaxed">
-                  {examplePost}
-                </p>
-              </div>
-
-              <div className="px-4 py-2 flex items-center justify-between border-t border-white/5 text-xs text-zinc-500">
-                <span>2,847 reactions</span>
-                <span>198 comments</span>
-              </div>
-            </div>
-
-            <p className="text-center text-xs text-zinc-600 mt-4">
-              Generated with PostCraft AI in the &quot;Thought Leader&quot; style
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-20 px-6 relative z-10" id="features" aria-label="Features">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white">
-              Everything you need to dominate LinkedIn
-            </h2>
-            <p className="text-zinc-400 mt-3 max-w-xl mx-auto">
-              A complete toolkit for creating, optimizing, and managing your
-              LinkedIn content strategy.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((feature, index) => (
-              <StaggeredCard key={feature.title} index={index}>
-                <div className="glass-card group transition-all h-full">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-400 group-hover:bg-indigo-600/20 transition-colors">
-                      <feature.icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    {"badge" in feature && feature.badge && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/25 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                        {feature.badge}
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-base font-semibold text-zinc-100">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </StaggeredCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="py-20 px-6 border-t border-white/5 relative z-10" aria-label="How it works">
+      {/* ── Hero ── */}
+      <section
+        className="relative z-10 pt-44 pb-32 px-6"
+        aria-label="Hero section"
+      >
         <div className="mx-auto max-w-4xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white">
-              Three steps to viral content
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                step: "01",
-                icon: PenLine,
-                title: "Enter your topic",
-                desc: "Type any topic, idea, or paste an existing post you want to improve.",
-              },
-              {
-                step: "02",
-                icon: Sparkles,
-                title: "Choose your style",
-                desc: "Pick from 6 writing styles, 6 tones, and 10 languages. AI crafts the perfect post.",
-              },
-              {
-                step: "03",
-                icon: Eye,
-                title: "Preview & publish",
-                desc: "Preview how it looks on LinkedIn, tweak if needed, copy and publish.",
-              },
-            ].map((item, index) => (
-              <StaggeredCard key={item.step} index={index}>
-                <div className="text-center">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-indigo-400 mb-4" aria-hidden="true">
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                  <p className="text-xs font-bold text-indigo-500 mb-2">
-                    STEP {item.step}
-                  </p>
-                  <h3 className="text-lg font-semibold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-zinc-400">{item.desc}</p>
-                </div>
-              </StaggeredCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 px-6 relative z-10" aria-label="Call to action">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="glass-card !p-12 glow-lg">
-            <h2 className="text-3xl font-bold text-white">
-              Ready to level up your LinkedIn game?
-            </h2>
-            <p className="mt-3 text-zinc-400">
-              Start creating viral-worthy posts in seconds. No signup, no credit
-              card, completely free.
-            </p>
+          <h1 className="fade-up text-6xl sm:text-7xl lg:text-8xl font-semibold tracking-tight text-white leading-[1.05]">
+            Write posts
+            <br />
+            that get noticed.
+          </h1>
+          <p className="fade-up mt-8 text-lg sm:text-xl text-white/40 max-w-xl leading-relaxed font-light">
+            AI-powered LinkedIn content. Six styles. Ten languages.
+            <br className="hidden sm:block" />
+            No signup. Just write.
+          </p>
+          <div className="fade-up mt-12">
             <Link
               href="/app"
-              className="btn-primary !px-10 !py-3.5 !text-base mt-8 inline-flex glow"
-              aria-label="Start creating LinkedIn posts now"
+              className="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-sm font-medium text-[#0a0a0c] transition-all duration-300 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98]"
+              aria-label="Start creating LinkedIn posts"
             >
-              Start Creating Now
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              Start Creating
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-8 px-6 relative z-10" role="contentinfo">
-        <div className="mx-auto max-w-6xl flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-indigo-600" aria-hidden="true">
-              <Zap className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-semibold text-zinc-400">PostCraft AI</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
-              WCAG 2.1 AA
+      {/* ── Stats ribbon ── */}
+      <section className="relative z-10 py-16 px-6" aria-label="Stats">
+        <div className="mx-auto max-w-4xl">
+          <div className="fade-up flex flex-wrap items-center gap-x-10 gap-y-4 text-sm font-mono text-white/30 tracking-wider uppercase">
+            <span>6 Styles</span>
+            <span className="text-white/10" aria-hidden="true">
+              /
             </span>
-            <p className="text-xs text-zinc-600">
-              Free & open source. Built with Next.js & AI.
-            </p>
+            <span>10 Languages</span>
+            <span className="text-white/10" aria-hidden="true">
+              /
+            </span>
+            <span>8 Templates</span>
+            <span className="text-white/10" aria-hidden="true">
+              /
+            </span>
+            <span>Free</span>
           </div>
+        </div>
+      </section>
+
+      {/* ── 6 Style showcase — editorial rows ── */}
+      <section
+        className="relative z-10 py-32 px-6"
+        aria-label="Writing styles"
+      >
+        <div className="mx-auto max-w-4xl">
+          <p className="fade-up text-xs font-mono text-white/20 uppercase tracking-[0.2em] mb-16">
+            Six writing styles
+          </p>
+
+          <div className="space-y-0">
+            {styles.map((style) => (
+              <div
+                key={style.num}
+                className="fade-up style-row group"
+              >
+                <div className="flex items-baseline gap-6 sm:gap-10">
+                  <span className="font-mono text-sm text-white/15 tabular-nums shrink-0">
+                    {style.num}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white/90 tracking-tight group-hover:text-white transition-colors duration-300">
+                      {style.name}
+                    </h3>
+                    <p className="mt-3 text-base text-white/25 leading-relaxed group-hover:text-white/40 transition-colors duration-300 max-w-2xl">
+                      {style.example}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Bottom CTA ── */}
+      <section
+        className="relative z-10 py-40 px-6"
+        aria-label="Call to action"
+      >
+        <div className="mx-auto max-w-4xl">
+          <h2 className="fade-up text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.1]">
+            Your next post
+            <br />
+            starts here.
+          </h2>
+          <div className="fade-up mt-12">
+            <Link
+              href="/app"
+              className="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-sm font-medium text-[#0a0a0c] transition-all duration-300 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98]"
+              aria-label="Start creating LinkedIn posts now"
+            >
+              Start Creating
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer
+        className="relative z-10 border-t border-white/[0.04] py-10 px-6"
+        role="contentinfo"
+      >
+        <div className="mx-auto max-w-5xl flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-2">
+            <div
+              className="flex h-5 w-5 items-center justify-center rounded bg-white/10"
+              aria-hidden="true"
+            >
+              <Zap className="h-2.5 w-2.5 text-white/40" />
+            </div>
+            <span className="text-xs text-white/20">PostCraft AI</span>
+          </div>
+          <p className="text-xs text-white/15">
+            Free & open source. Built with Next.js.
+          </p>
         </div>
       </footer>
     </div>
