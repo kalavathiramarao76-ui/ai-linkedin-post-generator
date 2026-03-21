@@ -1,7 +1,7 @@
 {
-  "name": "LinkedIn Post Pro",
-  "short_name": "PostCraft",
-  "description": "AI-powered LinkedIn post generator. Create viral posts in seconds.",
+  "name": "PostCraft AI — LinkedIn Post Generator",
+  "short_name": "PostCraft AI",
+  "description": "AI-powered LinkedIn post generator: create viral posts in seconds with 6 writing styles.",
   "start_url": "/app",
   "display": "standalone",
   "background_color": "#09090b",
