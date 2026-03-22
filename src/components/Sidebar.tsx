@@ -13,6 +13,7 @@ import {
   Star,
   Plug,
 } from "lucide-react";
+import { UserMenu } from "./AuthGate";
 import NotificationCenter from "./NotificationCenter";
 import CollabPresence from "./CollabPresence";
 import { getFavoritesCount } from "@/lib/favorites";
@@ -100,6 +101,7 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 pb-5 space-y-3">
+        <div className="px-1"><UserMenu /></div>
         {/* Collaboration Presence */}
         <div className="px-1">
           <CollabPresence />
