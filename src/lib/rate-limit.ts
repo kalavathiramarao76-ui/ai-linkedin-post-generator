@@ -1,33 +1,57 @@
-const rateLimit = new Map<string, { count: number; resetTime: number }>();
+import { Pool } from 'pg';
 
-const WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS = 20; // 20 requests per minute
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_k7uVICgJw8fs@ep-summer-art-ad8f5ek0.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require',
+  ssl: { rejectUnauthorized: false },
+  max: 5,
+});
 
-export function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const record = rateLimit.get(ip);
+const MAX_FREE = 3;
+const APP_NAME = 'postcraft';
 
-  if (!record || now > record.resetTime) {
-    rateLimit.set(ip, { count: 1, resetTime: now + WINDOW_MS });
-    return { allowed: true, remaining: MAX_REQUESTS - 1 };
+export async function checkAndIncrementUsage(ip: string): Promise<{ allowed: boolean; count: number; remaining: number }> {
+  try {
+    const result = await pool.query(`
+      INSERT INTO usage_tracking (ip_address, app_name, usage_count, last_used)
+      VALUES ($1, $2, 1, NOW())
+      ON CONFLICT (ip_address, app_name)
+      DO UPDATE SET usage_count = usage_tracking.usage_count + 1, last_used = NOW()
+      RETURNING usage_count
+    `, [ip, APP_NAME]);
+
+    const count = result.rows[0].usage_count;
+    return {
+      allowed: count <= MAX_FREE,
+      count,
+      remaining: Math.max(0, MAX_FREE - count),
+    };
+  } catch (error) {
+    console.error('Rate limit check failed:', error);
+    return { allowed: true, count: 0, remaining: MAX_FREE };
   }
-
-  if (record.count >= MAX_REQUESTS) {
-    return { allowed: false, remaining: 0 };
-  }
-
-  record.count++;
-  return { allowed: true, remaining: MAX_REQUESTS - record.count };
 }
 
-// Clean up expired entries every 5 minutes
-if (typeof setInterval !== "undefined") {
-  setInterval(() => {
-    const now = Date.now();
-    rateLimit.forEach((value, key) => {
-      if (now > value.resetTime) {
-        rateLimit.delete(key);
-      }
-    });
-  }, 5 * 60 * 1000);
+export async function markUserAuthenticated(ip: string, uid: string, email: string): Promise<void> {
+  try {
+    await pool.query(`
+      UPDATE usage_tracking
+      SET firebase_uid = $3, email = $4
+      WHERE ip_address = $1 AND app_name = $2
+    `, [ip, APP_NAME, uid, email]);
+  } catch (error) {
+    console.error('Mark auth failed:', error);
+  }
+}
+
+export async function isAuthenticated(ip: string): Promise<boolean> {
+  try {
+    const result = await pool.query(`
+      SELECT firebase_uid FROM usage_tracking
+      WHERE ip_address = $1 AND app_name = $2 AND firebase_uid IS NOT NULL
+      LIMIT 1
+    `, [ip, APP_NAME]);
+    return result.rows.length > 0;
+  } catch {
+    return false;
+  }
 }

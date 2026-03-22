@@ -4,7 +4,6 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import CharacterCounter from "@/components/CharacterCounter";
-import { incrementUsage } from "@/lib/usage";
 import PostCard from "@/components/PostCard";
 import LinkedInPreview from "@/components/LinkedInPreview";
 import { savePost } from "@/lib/storage";
@@ -43,6 +42,14 @@ export default function OptimizePage() {
         signal: controller.signal,
       });
 
+      if (response.status === 429) {
+        const errorData = await response.json();
+        if (errorData.error === "FREE_LIMIT_REACHED") {
+          window.dispatchEvent(new CustomEvent("usage-changed", { detail: errorData.count }));
+          return;
+        }
+      }
+
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
         throw new Error(err.error || "Optimization failed");
@@ -78,7 +85,6 @@ export default function OptimizePage() {
           }
         }
       }
-      incrementUsage();
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "AbortError") return;
       const msg = err instanceof Error ? err.message : "Optimization failed";

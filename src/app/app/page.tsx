@@ -79,6 +79,14 @@ export default function GeneratePage() {
           signal: controller.signal,
         });
 
+        if (response.status === 429) {
+          const errorData = await response.json();
+          if (errorData.error === "FREE_LIMIT_REACHED") {
+            window.dispatchEvent(new CustomEvent("usage-changed", { detail: errorData.count }));
+            return;
+          }
+        }
+
         if (!response.ok) {
           const err = await response.json().catch(() => ({}));
           throw new Error(err.error || "Request failed");

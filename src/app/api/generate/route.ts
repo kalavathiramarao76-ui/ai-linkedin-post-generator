@@ -1,20 +1,31 @@
 import { NextRequest } from "next/server";
 import { API_CONFIG } from "@/lib/constants";
 import { getGeneratePrompt, getHookPrompt, getHashtagPrompt, getTonePrompt } from "@/lib/prompts";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkAndIncrementUsage, isAuthenticated } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
-    const { allowed, remaining } = checkRateLimit(ip);
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+      || request.headers.get("x-real-ip")
+      || "unknown";
 
-    if (!allowed) {
-      return new Response(
-        JSON.stringify({ error: "Rate limit exceeded. Please wait a moment." }),
-        { status: 429, headers: { "Content-Type": "application/json" } }
-      );
+    const authed = await isAuthenticated(ip);
+
+    if (!authed) {
+      const { allowed, count, remaining } = await checkAndIncrementUsage(ip);
+      if (!allowed) {
+        return new Response(
+          JSON.stringify({
+            error: "FREE_LIMIT_REACHED",
+            message: `Free trial complete. You've used ${count} of 3 free generations. Sign in with Google to continue.`,
+            count,
+            remaining: 0,
+          }),
+          { status: 429, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
 
     const body = await request.json();
@@ -134,7 +145,6 @@ export async function POST(request: NextRequest) {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-        "X-RateLimit-Remaining": String(remaining),
       },
     });
   } catch (error) {
