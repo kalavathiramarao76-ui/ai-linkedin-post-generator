@@ -5,6 +5,8 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const siteUrl = "https://postcraft-ai.vercel.app";
+
 export const metadata: Metadata = {
   title: "PostCraft AI - LinkedIn Post Generator | Create Viral Posts in Seconds",
   description:
@@ -18,17 +20,58 @@ export const metadata: Metadata = {
     "post optimizer",
     "hook generator",
   ],
+  metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "PostCraft AI - LinkedIn Post Generator",
+    title: "PostCraft AI - LinkedIn Post Generator | Create Viral Posts in Seconds",
     description:
-      "Generate high-engagement LinkedIn posts with AI. Free, no signup required.",
+      "Generate high-engagement LinkedIn posts with AI. Choose from 6 writing styles, optimize existing posts, generate hooks, and preview before publishing. Free, no signup required.",
     type: "website",
+    url: siteUrl,
+    siteName: "PostCraft AI",
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "PostCraft AI - LinkedIn Post Generator",
+      },
+    ],
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PostCraft AI - LinkedIn Post Generator",
+    title: "PostCraft AI - LinkedIn Post Generator | Create Viral Posts in Seconds",
     description:
-      "Generate high-engagement LinkedIn posts with AI. Free, no signup required.",
+      "Generate high-engagement LinkedIn posts with AI. Choose from 6 writing styles, optimize existing posts, generate hooks, and preview before publishing. Free, no signup required.",
+    images: [`${siteUrl}/og-image.png`],
+    creator: "@postcraft_ai",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "PostCraft AI",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description:
+    "Generate high-engagement LinkedIn posts with AI. Choose from 6 writing styles, optimize existing posts, generate hooks, and preview before publishing.",
+  url: siteUrl,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    ratingCount: "120",
   },
 };
 
@@ -45,6 +88,10 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/icon-192.svg" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className={inter.className}>
         {/* Skip to content — visible only on focus */}

@@ -545,6 +545,100 @@
 }
 
 /* ═══════════════════════════════════════════════
+   Mobile Responsive — 320px+ safe
+   ═══════════════════════════════════════════════ */
+
+/* Clamp text sizing for fluid typography */
+html {
+  font-size: clamp(14px, 1vw + 12px, 16px);
+}
+
+/* Prevent horizontal overflow on smallest screens */
+body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Touch targets: minimum 44px */
+@layer components {
+  .btn-primary,
+  .btn-secondary,
+  .pill {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Small screen overrides */
+@media (max-width: 640px) {
+  /* Prevent overflow from large text */
+  h1, h2, h3, h4, h5, h6 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Scale down hero text */
+  .landing-root h1 {
+    font-size: clamp(2rem, 10vw, 3.5rem) !important;
+    line-height: 1.1;
+  }
+
+  .landing-root h2 {
+    font-size: clamp(1.75rem, 8vw, 3rem) !important;
+    line-height: 1.15;
+  }
+
+  /* Ensure nav doesn't overflow */
+  nav .max-w-5xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Stack footer on mobile */
+  footer .max-w-5xl {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  /* Reduce section padding */
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Touch-friendly CTA buttons */
+  .landing-root a[href="/app"] {
+    min-height: 48px;
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+  }
+
+  /* Style rows: tighter spacing */
+  .style-row {
+    padding: 1.25rem 0;
+  }
+}
+
+/* Tiny screens — 320px safety net */
+@media (max-width: 360px) {
+  .landing-root h1 {
+    font-size: 1.75rem !important;
+  }
+
+  .landing-root h2 {
+    font-size: 1.5rem !important;
+  }
+
+  /* Prevent blob overflow */
+  .animated-bg .blob {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════
    Apple-quality landing page styles
    ═══════════════════════════════════════════════ */
 
