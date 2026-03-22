@@ -599,12 +599,87 @@
   background: rgba(255, 255, 255, 0.015);
 }
 
+/* ===== MOTION GRAPHICS ===== */
+
+/* Letter reveal animation */
+@keyframes letterReveal {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.letter-reveal-char {
+  display: inline-block;
+  opacity: 0;
+  animation: letterReveal 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Count-up animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.counter-animate {
+  display: inline-block;
+  animation: countUp 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Typewriter effect */
+.typewriter-text {
+  display: inline;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 300;
+  margin-left: 1px;
+}
+
+.typewriter-cursor-blink {
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* 3D Tilt Card */
+.tilt-card {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Parallax layer */
+.parallax-layer {
+  will-change: transform;
+}
+
+/* Scroll snap */
+.scroll-snap-container {
+  scroll-snap-type: y proximity;
+}
+
+.scroll-snap-section {
+  scroll-snap-align: start;
+}
+
 /* Fade-up animation via IntersectionObserver */
 .fade-up {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
 }
 
 .fade-up-visible {
@@ -620,7 +695,7 @@
 .style-row:nth-child(5) .fade-up { transition-delay: 240ms; }
 .style-row:nth-child(6) .fade-up { transition-delay: 300ms; }
 
-/* Reduced motion override for landing */
+/* Reduced motion override for landing + motion graphics */
 @media (prefers-reduced-motion: reduce) {
   .fade-up {
     opacity: 1;
@@ -630,5 +705,35 @@
 
   .noise-overlay {
     display: none;
+  }
+
+  .letter-reveal-char {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .counter-animate {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .typewriter-cursor-blink {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .tilt-card {
+    transition: none !important;
+  }
+
+  .parallax-layer {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .scroll-snap-container {
+    scroll-snap-type: none;
   }
 }
